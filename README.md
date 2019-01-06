@@ -1,2 +1,1 @@
-# docker-wordpress
-Dockerize Wordpress
+# wordpress-prod
