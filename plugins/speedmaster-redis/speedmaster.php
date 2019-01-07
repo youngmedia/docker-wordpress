@@ -22,6 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ob_start();
 function speedmaster_end_buffer() {
   global $smcache;
+  global $wp_query;
 
   $buffer = '';
 
@@ -37,8 +38,28 @@ function speedmaster_end_buffer() {
   // Calculate how long time it to to render page.
   $time_after = microtime(true);
   
-  $smcache->store($filtered_buffer);
+  if ( true === is_cachable_page() ) {
+    // Save buffer to file if cache is enabled.
+    $saved_time = round($time_after - SPEEDMASTER_BUFFER_TIMESTAMP_START,3);    
+    $smcache->store($filtered_buffer . "\n" . '<!-- Speedmaster just saved you '.$saved_time.' second(s). -->');
+  }
+  
   echo $filtered_buffer;
+}
+
+function is_cachable_page() {
+  if (function_exists('is_user_logged_in') and is_user_logged_in()) return false;
+  if (false == (is_page() || is_front_page() || is_single() || is_archive())) return false;
+
+  if (count($_COOKIE)) {
+    foreach ($_COOKIE as $key => $val) {
+      if (preg_match("/wordpress_logged_in/i", $key)) {
+       return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 add_action('shutdown', 'speedmaster_end_buffer', 0);

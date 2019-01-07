@@ -26,11 +26,10 @@ class CacheStorage {
       $REDIS_PORT = 6379;
     }      
 
-    $cluster = new Credis_Cluster(array(
+    $this->engine = new Credis_Cluster(array(
       array('host' => $REDIS_HOST, 'port' => $REDIS_PORT, 'alias'=>'master', 'master'=>true, 'write_only'=>true),
       // array('host' => '127.0.0.1', 'port' => 6380, 'alias'=>'slave')
     ));
-    $this->engine = new Credis_Client($REDIS_HOST);
   }
 
   private function currentPageIdentifier() {
@@ -47,8 +46,6 @@ class CacheStorage {
   }
 
   public function html() {
-    if (!$this->isCachableRequest()) return null;
-
     try {
       return base64_decode($this->engine->get($this->storage_key));
     } catch (Exception $e) { $this->logAnddie($e); }
@@ -56,16 +53,7 @@ class CacheStorage {
     return null;
   }
 
-  public function isCachableRequest() {
-    if (null == $this->engine) return false;
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') return false;
-    if (function_exists('is_user_logged_in') and is_user_logged_in()) return false;
-    return true;
-  }
-
   public function store($html = "") {
-    if (!$this->isCachableRequest()) return null;
-
     try {
       $this->engine->set($this->storage_key, base64_encode($html));
       return true;
@@ -80,6 +68,7 @@ class CacheStorage {
   }
 
   private function logAndDie($error) {
+    return;
     die($error->getMessage());
   }
 }
