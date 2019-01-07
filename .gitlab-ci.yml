@@ -8,6 +8,9 @@ stages:
 services:
   - docker:dind
 
+before_script:
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+  
 # Build production image
 build-master:
   stage: build
@@ -21,5 +24,6 @@ build:
   stage: build
   script:
     - docker build --pull -t "youngmedia/docker-wordpress:$CI_COMMIT_REF_SLUG" .
+    - docker push "youngmedia/docker-wordpress:$CI_COMMIT_REF_SLUG"
   except:
     - master
