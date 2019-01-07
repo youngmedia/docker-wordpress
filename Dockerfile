@@ -67,5 +67,7 @@ COPY ./src/advanced-cache.php /var/www/html/wp-content/advanced-cache.php
 RUN rm -rf /var/www/html/.htaccess
 COPY ./src/.htaccess /var/www/html/.htaccess
 
+RUN mkdir /var/www/html/wp-content/uploads
+RUN chmod 777 -R /var/www/html/wp-content/uploads
 
 CMD ["apache2-foreground"]
