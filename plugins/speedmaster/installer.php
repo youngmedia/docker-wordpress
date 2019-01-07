@@ -20,15 +20,15 @@ class SpeedMasterInstaller {
   private function recreate_data_dir() {
     if (file_exists(SPEEDMASTER_DATA_DIR))
       return;
-    
-    mkdir(SPEEDMASTER_DATA_DIR, 0777, true);
+
+    @mkdir(SPEEDMASTER_DATA_DIR, 0777, true);
   }
 
   private function recreate_cache_dir() {
     if (file_exists(SPEEDMASTER_CACHE_DIR))
       return;
     
-    mkdir(SPEEDMASTER_CACHE_DIR, 0777, true);
+    @mkdir(SPEEDMASTER_CACHE_DIR, 0777, true);
   }
 
   private function recreate_config_file() {
@@ -36,7 +36,7 @@ class SpeedMasterInstaller {
       return;
 
     @touch(SPEEDMASTER_CONFIG_FILE, 0777, true);
-    file_put_contents(SPEEDMASTER_CONFIG_FILE, '{
+    @file_put_contents(SPEEDMASTER_CONFIG_FILE, '{
   "cache": {
     "enabled": false,
     "exclude": []
@@ -74,7 +74,7 @@ class SpeedMasterInstaller {
       return;
 
     @touch(SPEEDMASTER_STORAGE_FILE, 0777, true);
-    file_put_contents(SPEEDMASTER_STORAGE_FILE, '{
+    @file_put_contents(SPEEDMASTER_STORAGE_FILE, '{
   "cache": {
     "version_tag": 0
   }
@@ -83,7 +83,7 @@ class SpeedMasterInstaller {
 
   private function recreate_advanced_cache_file() { 
     @touch(SPEEDMASTER_ADVANCED_CACHE_FILE, 0777, true);
-    file_put_contents(SPEEDMASTER_ADVANCED_CACHE_FILE, "<?php
+    @file_put_contents(SPEEDMASTER_ADVANCED_CACHE_FILE, "<?php
 // Created by Speedmaster
 defined( 'ABSPATH' ) or die( 'Cheatin\' uh?' );
 define( 'SPEEDMASTER_ACTIVATED', true );
@@ -92,7 +92,7 @@ require_once( '".SPEEDMASTER_PLUGIN_DIR."/boot.php');");
 
   function update_wpconfig_var_to($value = 'true') {
     // Update config file
-    if (file_exists(SPEEDMASTER_WP_CONFIG_FILE)) {
+    if (file_exists(SPEEDMASTER_WP_CONFIG_FILE) and (!defined('WP_CACHE'))) {
       require_once(SPEEDMASTER_LIB_DIR . 'wp-config-transformer.php');
       $config = new WPConfigTransformer( SPEEDMASTER_WP_CONFIG_FILE );
       $config->update( 'constant', 'WP_CACHE', $value, array( 
