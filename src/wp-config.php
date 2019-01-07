@@ -8,29 +8,34 @@ define( 'DB_PASSWORD', getenv('WORDPRESS_DB_PASSWORD'));
 define( 'DB_HOST', getenv('WORDPRESS_DB_HOST'));
 define( 'DB_CHARSET',  'utf8' );
 
-define( 'AUTH_KEY',         'cU?8`DF!y8=OB}&AF U(j3[`X~JzoHFZ05l!7hl7bffD3~+Vz,Z#uC|+4})V&c#E' );
-define( 'SECURE_AUTH_KEY',  ';ycch5`il9[B/pnJcCI7Xg90WW<ucUUbviW[VM+GHM17$ah>BD?i4A>,~$zFzoD{' );
-define( 'LOGGED_IN_KEY',    ',hPLNh P-#!e4Aj K8gV.h44qA>0InV|#~n&gp[uQmf4TrQblz:vJO{X-PVSy*fO' );
-define( 'NONCE_KEY',        'C+&~Z.zXpv$TtP 5A~.?%ef~B>(Yn~;yN{GIZ2p!)rrrJ9Rx4V%ll<yji$g#@G{}' );
-define( 'AUTH_SALT',        'hNzmQcwU]ZB]g?;c#}prHLh#`}wqLx|kdx;}U?=nF]_&*o!d(Ia}HyqQ)#EXq.Zv' );
-define( 'SECURE_AUTH_SALT', '=wbe;96OU}W<G`<}*(LqAvS>Jo9n(X{@$Iltchs+BSz#.20PW]PZeU6a4-#l-NB)' );
-define( 'LOGGED_IN_SALT',   ' eFEUs/g;[:ee7sbAs;)A7@KR(}3-k.mEml!)E?!RrU 8;<hq 4jH^OXW9+m:5M7' );
-define( 'NONCE_SALT',       'y/$Yw3:OvF .h )FlAq<bJG7L#k{?|=Fx(OoPOhZL`+N_28bn93JtI$aq**a!LZ6' );
-
 $table_prefix  = getenv('WORDPRESS_DB_PREFIX') ? getenv('WORDPRESS_DB_PREFIX') : 'wp_';
 
 // Turns WordPress debugging on
 define('WP_DEBUG', getenv('WORDPRESS_DEBUG'));
 
-// Doesn't force the PHP 'display_errors' variable to be on
-// define('WP_DEBUG_DISPLAY', getenv('WORDPRESS_DEBUG'));
-
-// define( 'WP_SITEURL', WP_HOME . '/wp');
-// define( 'WP_CONTENT_URL', WP_HOME . '/wp-content');
-// define( 'WP_CONTENT_DIR', __DIR__ . '/wp-content' );
-
+// Prevent SSL proxy redirect loop.
 if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false)
   $_SERVER['HTTPS']='on';
+
+// Disable the Plugin and Theme Editor
+if ( ! defined('DISALLOW_FILE_EDIT') )
+  define( 'DISALLOW_FILE_EDIT', true );
+
+// Disable Plugin and Theme Update and Installation
+if ( ! defined('DISALLOW_FILE_MODS') )
+  define( 'DISALLOW_FILE_MODS', true );
+
+// Disable all automatic updates:
+if ( ! defined('AUTOMATIC_UPDATER_DISABLED') )
+ define( 'AUTOMATIC_UPDATER_DISABLED', true );
+
+// Enable core updates for minor releases (default):
+if ( ! defined('WP_AUTO_UPDATE_CORE') )
+ define( 'WP_AUTO_UPDATE_CORE', false);
+
+// Cleanup Image Edits
+if ( ! defined('IMAGE_EDIT_OVERWRITE') ) 
+  define( 'IMAGE_EDIT_OVERWRITE', true );
 
 /* Absolute path to the WordPress directory. */
 if ( !defined('ABSPATH') )
