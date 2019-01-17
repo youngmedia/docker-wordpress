@@ -1,24 +1,23 @@
 <?php
-// Prevent direct access
-if ( ! defined( 'ABSPATH' ) ) {
-  die( 'Invalid request.' );
-}
+namespace Speedmaster;
 
-// Initiate a timer that can be used to calculate page rendering time.
-define( 'SPEEDMASTER_BUFFER_TIMESTAMP_START', microtime(true)); 
+define( 'SM__TIMESTAMP_BOOT', microtime(true));
 
 // Load vendor libraries
 require_once('lib/credis/Client.php');
 require_once('lib/credis/Cluster.php');
 
-// Load project classes.
-require_once('src/classes/CacheStorage.php');
+// Load Speedmaster helpers
+require_once('helpers/Admin.php');
+require_once('helpers/CacheStorage.php');
+require_once('helpers/CurrentPage.php');
 
-// Create a global cache storage object for gets/sets.
 global $smcache;
-$smcache = new CacheStorage('redis', array('REDIS_HOST' => 'redis'));
 
-if ($html = $smcache->html()) {
-  echo $html;
+$smcache = new CacheStorage();
+$smcache->connect();
+
+if (true == CurrentPage::hasCache()) {
+  echo CurrentPage::getCachedHTML();
   die();
 }
