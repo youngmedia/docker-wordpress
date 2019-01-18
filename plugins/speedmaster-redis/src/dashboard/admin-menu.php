@@ -32,7 +32,5 @@ function speedmaster_settings_page_view() {
     return strlen($a->request_uri)-strlen($b->request_uri);
   });
 
-  $addons = apply_filters('speedmaster__addons', array());
-
   include('admin-page.php');
 }

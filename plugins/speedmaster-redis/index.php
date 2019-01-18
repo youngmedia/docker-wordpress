@@ -4,7 +4,7 @@ Plugin Name: Speedmaster
 Description: HTML in-memory caching with Redis.
 Author: Speedmaster.io
 Author URI: https://speedmaster.io
-Version: 0.2.0
+Version: 0.2.2
 Text Domain: speedmaster
 */
 
@@ -13,6 +13,9 @@ namespace Speedmaster;
 if ( ! defined( 'ABSPATH' ) ) {
   die( 'Invalid request.' );
 }
+
+require_once('src/dashboard/admin-menu.php');
+require_once('src/dashboard/toolbar.php');
 
 if (!defined('SM__TIMESTAMP_BOOT')) {
   add_action( 'admin_notices', function() {
@@ -26,18 +29,7 @@ if (!defined('SM__TIMESTAMP_BOOT')) {
   ob_start();
 
   // Include all addon initializers.
-  require_once('addons/minify/index.php');
-
-  add_filter('speedmaster__addons', function($addons) {
-    $o = array();
-
-    foreach($addons as $addon) {
-      $addon['activated'] = true;
-      $o[] = $addon;
-    }
-
-    return $o;
-  }, 999999);
+  require_once('addons/boot.php');
 
   add_action('shutdown', function() {
     global $wp_query;
@@ -50,23 +42,18 @@ if (!defined('SM__TIMESTAMP_BOOT')) {
     $filtered_buffer = $buffer;
 
     if(!is_admin()) {
-
-      $addons = apply_filters('speedmaster__addons', array());
-      foreach ($addons as $addon) {
-        if ($addon['activated'] == true) require_once($addon['file_path']);
-      }
-
       $filtered_buffer = apply_filters('speedmaster__buffer', $buffer);
     }
 
     // Save current page to cache.
-    if (true === CurrentPage::isCachable()) {
-      $data = CurrentPage::to_a($filtered_buffer);
-      $smcache->set(CurrentPage::identifier(), $data);
+    if (true === CurrentRequest::isCachable()) {
+      $data = CurrentRequest::to_a($filtered_buffer);
+      if ($data['response_code'] == 200) {
+        $smcache->set(CurrentRequest::identifier(), $data);        
+      }
     }
 
     echo $filtered_buffer;
   }, 0);
 
-  require_once('src/dashboard/admin-menu.php');
 }

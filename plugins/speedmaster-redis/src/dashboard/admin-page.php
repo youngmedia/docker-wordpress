@@ -1,30 +1,74 @@
+<?php
+global $smaddons;
+function cvalue($key) {
+  if (defined($key))
+    if (constant($key) === true)
+      return 'true';
+    else if (constant($key) === false)
+      return 'false';
+    else
+      return esc_attr(constant($key));
+  else
+    return '<em>N/A</em>';
+}
+?>
 <div class="wrap">
   <div class="container">
 
+
+    <div class="row mb-4">
+      <div class="col-8">
+        <h2>Speedmaster <span class="text-muted">with in-memory Redis cache.</span></h2>
+      </div>
+      <div class="col-4 text-right">
+        <h2 class="text-muted"><?= count($cached_pages); ?> cached pages</h2>
+      </div>
+    </div>
+
+    <table class="table table-striped">
+      <tbody>
+        <?php foreach ($smaddons as $addon): ?>
+        <tr>
+          <th><?=esc_attr($addon['title']); ?></th>
+          <td>
+            <?=esc_attr($addon['description']); ?><br>
+            <small><?=esc_attr($addon['file_path']); ?></small>
+          </td>
+          <td class="text-right">
+            <?php 
+            if (true == $addon['activated']) 
+              echo 'activated'; 
+            else
+              echo 'not active';
+            ?>
+          </td>
+        </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+
     <div class="row">
       <div class="col-12">
-        <h2 class="mb-5">Speedmaster <span class="text-muted">with in-memory Redis cache.</span></h2>
+        <h5 class="mt-3 mb-3">Config variables</h5>
         <table class="table table-striped">
+          <thead>
+            <th>VARIABLE</th>
+            <th>VALUE</th>
+          </thead>
           <tbody>
-            <?php foreach ($addons as $addon): ?>
-            <tr>
-              <th><?=esc_attr($addon['title']); ?></th>
-              <td>
-                <?=esc_attr($addon['description']); ?><br>
-                <small><?=esc_attr($addon['file_path']); ?></small>
-              </td>
-              <td>
-                <label class="switch">
-                  <input type="checkbox" <?php if (true == $addon['activated']) echo 'checked'; ?>>
-                  <span class="slider"></span>
-                </label>
-              </td>
-            </tr>
-            <?php endforeach; ?>
+            <?php foreach ($smaddons as $addon): ?>
+              <?php if (isset($addon['vars'])): foreach($addon['vars'] as $var): ?>
+              <tr>
+                <td><?php echo $var; ?></td>
+                <td><?php echo cvalue($var);?></td>
+              </tr>
+              <?php endforeach; endif; ?>
+            <?php endforeach;?>
           </tbody>
         </table>
       </div>
     </div>
+
 
   </div>
 </div>
@@ -40,6 +84,7 @@
 
 table.table tr td, table.table tr th {
   vertical-align: middle;
+  font-size: 13px;
 }
 
 /* The switch - the box around the slider */
@@ -95,5 +140,9 @@ input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
+}
+
+.total_cached_pages {
+  font-size: 20px;
 }
 </style>

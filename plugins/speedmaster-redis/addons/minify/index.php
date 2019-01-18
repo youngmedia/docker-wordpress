@@ -5,15 +5,9 @@ add_filter('speedmaster__addons', function($addons) {
     'id' => 'minify-html',
     'title' => __('Minify HTML', 'speedmaster'),
     'description' => __('Minifies HTML and decreases the file size of the rendered HTML code.', 'speedmaster'),
-    'file_path' => dirname(__FILE__) . '/html.php'
+    'file_path' => dirname(__FILE__) . '/html.php',
+    'vars' => array('SPEEDMASTER__MINIFY_HTML')
   );
-
-  $addons[] = array(
-    'id' => 'footer-scripts',
-    'title' => __('Footer scripts', 'speedmaster'),
-    'description' => __('Move all inline <script>-tags and linked javascripts to footer.', 'speedmaster'),
-    'file_path' => dirname(__FILE__) . '/footer-scripts.php'
-  );
-
+  
   return $addons;
 });
