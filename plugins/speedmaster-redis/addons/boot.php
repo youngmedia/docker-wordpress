@@ -1,4 +1,6 @@
 <?php
+namespace Speedmaster;
+
 require_once('minify/index.php');
 require_once('combine-css-js/index.php');
 require_once('footer-scripts/index.php');

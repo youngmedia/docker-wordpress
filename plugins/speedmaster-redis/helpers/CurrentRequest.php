@@ -22,6 +22,8 @@ class CurrentRequest {
     if (function_exists('is_user_logged_in') and is_user_logged_in()) return false;
     if ('POST' == $_SERVER['REQUEST_METHOD']) return false;
     if (preg_match("/wp-admin/i", $_SERVER['REQUEST_URI'])) return false;
+    if (preg_match("/\.txt/i", $_SERVER['REQUEST_URI'])) return false;
+    if (preg_match("/\.xml/i", $_SERVER['REQUEST_URI'])) return false;
 
     if (count($_COOKIE)) {
       foreach ($_COOKIE as $key => $val) {
