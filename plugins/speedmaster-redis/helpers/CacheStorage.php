@@ -10,15 +10,62 @@ class CacheStorage {
   }
 
   public function connect($args = array()) {
+
+    if (!defined('SPEEDMASTER__REDIS_MASTER_HOST') && getenv('SPEEDMASTER__REDIS_MASTER_HOST'))
+      define('SPEEDMASTER__REDIS_MASTER_HOST', getenv('SPEEDMASTER__REDIS_MASTER_HOST'));
+
+    if (!defined('SPEEDMASTER__REDIS_MASTER_PORT') && getenv('SPEEDMASTER__REDIS_MASTER_PORT'))
+      define('SPEEDMASTER__REDIS_MASTER_PORT', getenv('SPEEDMASTER__REDIS_MASTER_PORT'));
+
+    if (!defined('SPEEDMASTER__REDIS_SLAVE_HOST') && getenv('SPEEDMASTER__REDIS_SLAVE_HOST'))
+      define('SPEEDMASTER__REDIS_SLAVE_HOST', getenv('SPEEDMASTER__REDIS_SLAVE_HOST'));
+
+    if (!defined('SPEEDMASTER__REDIS_SLAVE_PORT') && getenv('SPEEDMASTER__REDIS_SLAVE_PORT'))
+      define('SPEEDMASTER__REDIS_SLAVE_PORT', getenv('SPEEDMASTER__REDIS_SLAVE_PORT'));
+
+    if (!defined('SPEEDMASTER__REDIS_MASTER_PORT'))
+      define('SPEEDMASTER__REDIS_MASTER_PORT', 6379);
+
+    if (!defined('SPEEDMASTER__REDIS_MASTER_HOST'))
+      define('SPEEDMASTER__REDIS_MASTER_HOST', '127.0.0.1');
+
+    if (!defined('SPEEDMASTER__REDIS_MASTER_PORT'))
+      define('SPEEDMASTER__REDIS_MASTER_PORT', 6379);
+
+    if (!defined('SPEEDMASTER__REDIS_SLAVE_HOST') && defined('SPEEDMASTER__REDIS_MASTER_HOST'))
+      define('SPEEDMASTER__REDIS_SLAVE_HOST', SPEEDMASTER__REDIS_MASTER_HOST);
+    
+    if (!defined('SPEEDMASTER__REDIS_SLAVE_PORT') && defined('SPEEDMASTER__REDIS_MASTER_PORT'))
+      define('SPEEDMASTER__REDIS_SLAVE_PORT', SPEEDMASTER__REDIS_MASTER_PORT);
+
     $args = array(
       'to' => 'redis',
       'connections' => array(
-        array( 'host' => 'redis', 'port' => '6379', 'alias' => 'master', 'master' => true, 'write_only' => true ),
-        array( 'host' => 'redis', 'port' => '6379', 'alias' => 'slave'  )
+        array( 
+          'host' => SPEEDMASTER__REDIS_MASTER_HOST, 
+          'port' => SPEEDMASTER__REDIS_MASTER_PORT, 
+          'alias' => 'master', 
+          'master' => true, 
+          'write_only' => true 
+        ),
+        array( 
+          'host' => SPEEDMASTER__REDIS_SLAVE_HOST, 
+          'port' => SPEEDMASTER__REDIS_SLAVE_PORT, 
+          'alias' => 'slave'
+        )
       )
     );
 
     $this->engine = new \Credis_Cluster($args['connections']);
+
+    try {
+      $this->keys();
+      if (!defined('SPEEDMASTER__REDIS_CONNECTION')) define('SPEEDMASTER__REDIS_CONNECTION', true);
+    } catch (\Exception $e) {
+      if (!defined('SPEEDMASTER__REDIS_CONNECTION')) define('SPEEDMASTER__REDIS_CONNECTION', false);
+    }
+
+    
   }
 
   public function set($key, $data = array()) {

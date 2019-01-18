@@ -19,6 +19,7 @@ class CurrentRequest {
 
   // Check if this page are allowed to get cached.
   static public function isCachable() {
+    if (SPEEDMASTER__REDIS_CONNECTION === false) return false;
     if (function_exists('is_user_logged_in') and is_user_logged_in()) return false;
     if ('POST' == $_SERVER['REQUEST_METHOD']) return false;
     if (preg_match("/wp-admin/i", $_SERVER['REQUEST_URI'])) return false;
