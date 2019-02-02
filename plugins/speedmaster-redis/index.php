@@ -4,7 +4,7 @@ Plugin Name: Speedmaster
 Description: HTML in-memory caching with Redis.
 Author: Speedmaster.io
 Author URI: https://speedmaster.io
-Version: 0.2.2
+Version: 1.0.0
 Text Domain: speedmaster
 */
 
@@ -26,7 +26,7 @@ if (!defined('SM__TIMESTAMP_BOOT')) {
   });
 } else {
 
-  ob_start();
+  add_action('after_setup_theme', function() { ob_start(); });
 
   // Include all addon initializers.
   require_once('addons/boot.php');
