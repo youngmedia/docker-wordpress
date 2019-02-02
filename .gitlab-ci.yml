@@ -4,6 +4,7 @@ image: docker:latest
 
 stages:
   - build
+  - deploy
 
 services:
   - docker:dind
@@ -18,4 +19,12 @@ build-master:
     - docker build --pull -t "youngmedia/docker-wordpress" .
     - docker push "youngmedia/docker-wordpress"
   only:
+    - master
+
+build:
+  stage: deploy
+  script:
+    - docker build --pull -t "youngmedia/docker-wordpress" .
+    - docker push "youngmedia/docker-wordpress"
+  except:
     - master
