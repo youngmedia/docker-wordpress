@@ -19,11 +19,3 @@ build-master:
     - docker push "youngmedia/docker-wordpress"
   only:
     - master
-
-build:
-  stage: build
-  script:
-    - docker build --pull -t "youngmedia/docker-wordpress:$CI_COMMIT_REF_SLUG" .
-    - docker push "youngmedia/docker-wordpress:$CI_COMMIT_REF_SLUG"
-  except:
-    - master

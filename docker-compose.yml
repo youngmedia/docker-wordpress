@@ -15,7 +15,6 @@ services:
       REDIS_HOST: redis
     volumes:
       - ./plugins:/var/www/html/wp-content/plugins/
-      - ./uploads:/var/www/html/wp-content/uploads/
     depends_on:
       - mysql
       - redis
