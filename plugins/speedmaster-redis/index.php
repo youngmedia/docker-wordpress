@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Speedmaster 
-Description: HTML in-memory caching with Redis.
+Description: HTML in-memory caching with Redis. Merged 2 feb 2019
 Author: Speedmaster.io
 Author URI: https://speedmaster.io
 Version: 1.0.0
