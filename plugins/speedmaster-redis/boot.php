@@ -1,24 +1,25 @@
 <?php
-// Prevent direct access
-if ( ! defined( 'ABSPATH' ) ) {
-  die( 'Invalid request.' );
-}
+// Load Speedmaster helpers
+require_once('helpers/Admin.php');
+require_once('helpers/CacheStorage.php');
+require_once('helpers/CurrentRequest.php');
 
-// Initiate a timer that can be used to calculate page rendering time.
-define( 'SPEEDMASTER_BUFFER_TIMESTAMP_START', microtime(true)); 
-
-// Load vendor libraries
-require_once('lib/credis/Client.php');
-require_once('lib/credis/Cluster.php');
-
-// Load project classes.
-require_once('src/classes/CacheStorage.php');
-
-// Create a global cache storage object for gets/sets.
 global $smcache;
-$smcache = new CacheStorage('redis', array('REDIS_HOST' => 'redis'));
 
-if ($html = $smcache->html()) {
-  echo $html;
+$smcache = new CacheStorage();
+$smcache->connect();
+
+if (true == CurrentRequest::hasCache()) {
+
+  $request_type = CurrentRequest::requestType();
+
+  if ('html' == $request_type) {
+    echo CurrentRequest::getCachedHTML();
+  } else if ('css' == $request_type) {
+    echo CurrentRequest::getCachedCSS();
+  } else if ('js' == $request_type) {
+    echo CurrentRequest::getCachedJS();
+  }
+ 
   die();
 }
