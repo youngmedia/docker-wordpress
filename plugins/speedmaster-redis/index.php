@@ -4,7 +4,7 @@ Plugin Name: Speedmaster
 Description: HTML in-memory caching with Redis.
 Author: Speedmaster.io
 Author URI: https://speedmaster.io
-Version: 1.1
+Version: 1.0.0
 Text Domain: speedmaster
 */
 
