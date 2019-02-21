@@ -1,6 +1,8 @@
 <?php
 add_filter('speedmaster__buffer', function($html){
-
+  if (preg_match("/\.txt/i", $_SERVER['REQUEST_URI'])) return $html;
+  if (preg_match("/\.xml/i", $_SERVER['REQUEST_URI'])) return $html;
+  
   return TinyMinify::html($html);
 });
 

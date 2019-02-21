@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Speedmaster 
-Description: HTML in-memory caching with Redis. Merged 2 feb 2019
+Description: HTML in-memory caching with Redis. 21th feb 2018
 Author: Speedmaster.io
 Author URI: https://speedmaster.io
-Version: 1.0.0
+Version: 1.0.1
 Text Domain: speedmaster
 */
 
